@@ -1,0 +1,12 @@
+# 总的配置文件
+/RemoteCtl/.vs
+/RemoteCtl/x64
+
+# 服务端产生的无关文件
+/RemoteCtl/RemoteCtl/x64
+/RemoteCtl/RemoteCtl/RemoteCtl.vcxproj.user
+
+# 服务端产生的无关文件
+/RemoteCtl/RemoteClient/x64
+/RemoteCtl/RemoteClient/RemoteClient.aps
+/RemoteCtl/RemoteClient/RemoteClient.vcxproj.user
