@@ -4,6 +4,7 @@
 #include "pch.h"
 #include "framework.h"
 #include "RemoteCtl.h"
+#include "ServerSocket.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -34,6 +35,32 @@ int main()
         else
         {
             // TODO: 在此处为应用程序的行为编写代码。
+            CServerSocket* pserver = CServerSocket::GetInstance();
+            int cnt = 0;
+
+            if (pserver->InitSocket() == FALSE)
+            {
+                MessageBox(NULL, _T("网络初始化异常"), _T("网络初始化失败"), MB_OK | MB_ICONERROR);
+                exit(0);
+            }
+
+            while (CServerSocket::GetInstance() != NULL)
+            {
+                
+                if (pserver->AcceptClient() == FALSE)
+                {
+                    if (cnt >= 3)
+                    {
+                        MessageBox(NULL, _T("用户多次连接失败，程序自动结束"), _T("连接失败"), MB_OK | MB_ICONERROR);
+                        exit(0);
+                    }
+
+                    cnt++;
+                    MessageBox(NULL, _T("用户连接失败"), _T("连接失败"), MB_OK | MB_ICONERROR);
+                }
+                
+                int ret = pserver->DealCommand();
+            }
         }
     }
     else
