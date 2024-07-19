@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "ServerSocket.h"
 
+#define RECV_BUFFER_SIZE 1024
+
 CServerSocket::CHelper CServerSocket::m_helper;
 CServerSocket *CServerSocket::m_instance = NULL;
 
@@ -25,13 +27,13 @@ void CServerSocket::ReleaseInstance()
 
 CServerSocket::CServerSocket()
 {
-	m_clientSocket = INVALID_SOCKET;
 	if (!InitSockEnv())
 	{
 		MessageBox(NULL, _T("无法初始化套接字环境，请检查网络"), _T("初始化错误"), MB_OK | MB_ICONERROR);
 		exit(0);
 	}
 	m_serverSocket = socket(PF_INET, SOCK_STREAM, 0);
+	m_clientSocket = INVALID_SOCKET;
 }
 
 CServerSocket::~CServerSocket()
@@ -95,16 +97,27 @@ int CServerSocket::DealCommand()
 {
 	if (m_clientSocket == -1)
 	{
-		return FALSE;
+		return -1;
 	}
 
-	char buffer[1024];
+	size_t index = 0;
+	char buffer[RECV_BUFFER_SIZE];
 	while (TRUE)
 	{
-		int len = recv(m_clientSocket, buffer, sizeof(buffer), 0);
+		int len = recv(m_clientSocket, buffer, RECV_BUFFER_SIZE, 0);
 		if (len <= 0)
 		{
 			return -1;
+		}
+
+		index += len;
+		len = index;
+		m_packet = SPacket((BYTE*)buffer, len);
+		if (len > 0)
+		{
+			memmove(buffer, buffer + len, RECV_BUFFER_SIZE - len);
+			index -= len;
+			return m_packet.m_sHead.m_sCmd;
 		}
 	}
 }

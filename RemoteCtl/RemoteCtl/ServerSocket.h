@@ -2,6 +2,7 @@
 
 #include "pch.h"
 #include "framework.h"
+#include "Packet.h"
 
 class CServerSocket
 {
@@ -40,8 +41,8 @@ private:
 	static CHelper m_helper;
 	static CServerSocket* m_instance;
 
-
 	SOCKET m_serverSocket;
 	SOCKET m_clientSocket;
+	SPacket m_packet;
 };
 

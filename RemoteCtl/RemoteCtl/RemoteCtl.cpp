@@ -1,6 +1,13 @@
 ﻿// RemoteCtl.cpp : 此文件包含 "main" 函数。程序执行将在此处开始并结束。
 //
 
+// 设置子系统和入口函数
+//#pragma comment(linker,"subsystem:windows /entry:WinMainCRTStartup")
+//#pragma comment(linker,"subsystem:windows /entry:mainCRTStartup")
+//#pragma comment(linker,"subsystem:console /entry:mainCRTStartup")
+//#pragma comment(linker,"subsystem:console /entry:WinMainCRTStartup")
+
+
 #include "pch.h"
 #include "framework.h"
 #include "RemoteCtl.h"
