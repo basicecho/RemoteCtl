@@ -12,6 +12,7 @@
 #include "framework.h"
 #include "RemoteCtl.h"
 #include "ServerSocket.h"
+#include "Packet.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -23,6 +24,51 @@
 CWinApp theApp;
 
 using namespace std;
+
+void Dump(BYTE* pData, size_t nSize)
+{
+    std::string strOut;
+    for (size_t i = 0; i < nSize; i++)
+    {
+        char buf[8] = "";
+        if (i % 16 == 0)
+        {
+            strOut += "\n";
+        }
+
+        snprintf(buf, sizeof(buf), "%02X", pData[i] & 0xFF);
+        strOut += buf;
+    }
+
+    strOut += "\n";
+    OutputDebugStringA(strOut.c_str());
+}
+
+std::string MakeDirveInfo()
+{
+    std::string ret;
+    DWORD drives = GetLogicalDrives();
+    if (drives == 0)
+    {
+        TRACE("Cannot get logical drives");
+        return ret;
+    }
+    else
+    {
+        for (int i = 0; i < 26; i++)
+        {
+            if (drives & (1 << i))
+            {
+                ret += ('A' + i);
+            }
+        }
+    }
+
+    SPacket packet = SPacket(1, (BYTE *)ret.c_str(), ret.size());
+    Dump((BYTE*)&packet, packet.m_sHead.m_nLength);
+
+    return ret;
+}
 
 int main()
 {
